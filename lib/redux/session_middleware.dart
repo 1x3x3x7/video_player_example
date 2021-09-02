@@ -1,15 +1,14 @@
-import 'dart:async';
-
 import 'package:redux/redux.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_example/data/ticker_repository.dart';
 import 'package:video_player_example/data/workout_repository.dart';
 import 'package:video_player_example/redux/app_state.dart';
 import 'package:video_player_example/redux/session_actions.dart';
 import 'package:video_player_example/redux/session_state.dart';
 
 class SessionMiddleware implements MiddlewareClass<SessionState> {
-  Timer? sessionTicker;
   final workoutRepository = WorkoutRepository();
+  final tickerRepository = TickerRepository();
 
   @override
   call(Store store, action, NextDispatcher next) async {
@@ -36,7 +35,8 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
       if (state is SessionLoaded) {
         assert(state.controller.value.isInitialized);
         await state.controller.play();
-        startTimer(store as Store<AppState>);
+        tickerRepository.start(Duration(seconds: 1),
+            (event) => store.dispatch(SessionTickAction(1)));
       }
     }
 
@@ -44,6 +44,7 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
       if (state is SessionLoaded) {
         assert(state.controller.value.isInitialized);
         await state.controller.pause();
+        await tickerRepository.stop();
       }
     }
 
@@ -67,26 +68,11 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
           }
         } else {
           workoutRepository.doneWorkout();
+          tickerRepository.stop();
           store.dispatch(SessionEndAction(state.stopwatchTime));
         }
       }
     }
     next(action);
-  }
-
-// TODO make timer more smoothly
-  void startTimer(Store<AppState> store) {
-    if ((sessionTicker != null && !sessionTicker!.isActive) ||
-        sessionTicker == null) {
-      sessionTicker?.cancel();
-      sessionTicker = Timer.periodic(Duration(milliseconds: 300), (timer) {
-        if (store.state.sessionState is SessionLoaded &&
-            (store.state.sessionState as SessionLoaded).playing) {
-          store.dispatch(SessionTickAction(0.3));
-        } else {
-          timer.cancel();
-        }
-      });
-    }
   }
 }
