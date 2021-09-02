@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:video_player_example/exercise.dart';
+import 'package:video_player_example/presentation/video_controls_widget.dart';
+import 'package:video_player_example/presentation/video_overlay_widget.dart';
+import 'package:video_player_example/presentation/video_widget.dart';
 import 'package:video_player_example/redux/app_state.dart';
 import 'package:video_player_example/redux/session_actions.dart';
 import 'package:video_player_example/redux/session_state.dart';
-import 'package:video_player_example/video_controls_widget.dart';
-import 'package:video_player_example/video_overlay_widget.dart';
-import 'package:video_player_example/video_widget.dart';
-import 'package:video_player_example/extensions.dart';
+import 'package:video_player_example/common/extensions.dart';
 
 class VideoScreen extends StatefulWidget {
   VideoScreen({Key? key}) : super(key: key);
@@ -17,13 +16,11 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  var videoClips = exercises;
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _SessionScreenViewModel>(
       onInit: (store) {
-        store.dispatch(SessionInitAction(videoClips));
+        store.dispatch(SessionInitAction(0));
       },
       converter: (store) => _SessionScreenViewModel(
         state: store.state.sessionState,

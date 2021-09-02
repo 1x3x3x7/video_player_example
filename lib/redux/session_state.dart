@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:video_player/video_player.dart';
-import 'package:video_player_example/exercise.dart';
+import 'package:video_player_example/data/exercise.dart';
 
 abstract class SessionState {}
 

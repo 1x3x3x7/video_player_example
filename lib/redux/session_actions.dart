@@ -1,10 +1,10 @@
 import 'package:video_player/video_player.dart';
-import 'package:video_player_example/exercise.dart';
+import 'package:video_player_example/data/exercise.dart';
 
 class SessionInitAction {
-  final List<Exercise> args;
+  final int id;
 
-  SessionInitAction(this.args);
+  SessionInitAction(this.id);
 }
 
 class SessionErrorAction {}

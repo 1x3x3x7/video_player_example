@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:redux/redux.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_example/data/workout_repository.dart';
 import 'package:video_player_example/redux/app_state.dart';
 import 'package:video_player_example/redux/session_actions.dart';
 import 'package:video_player_example/redux/session_state.dart';
 
 class SessionMiddleware implements MiddlewareClass<SessionState> {
   Timer? sessionTicker;
-// TODO repository
+  final workoutRepository = WorkoutRepository();
+
   @override
   call(Store store, action, NextDispatcher next) async {
     final state = (store.state as AppState).sessionState;
@@ -16,12 +18,13 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
     if (action is SessionInitAction) {
       store.dispatch(SessionStartInitializingAction());
       try {
+        final exercises = await workoutRepository.loadWorkout(action.id);
         final VideoPlayerController controller =
-            VideoPlayerController.network(action.args[0].url);
+            VideoPlayerController.network(exercises[0].url);
         await controller.initialize();
         await controller.setLooping(true);
 
-        store.dispatch(SessionInitializedAction(controller, action.args));
+        store.dispatch(SessionInitializedAction(controller, exercises));
 
         store.dispatch(SessionPlayAction());
       } catch (error) {
@@ -63,6 +66,7 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
             store.dispatch(SessionErrorAction());
           }
         } else {
+          workoutRepository.doneWorkout();
           store.dispatch(SessionEndAction(state.stopwatchTime));
         }
       }

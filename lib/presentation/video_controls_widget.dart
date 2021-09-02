@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'extensions.dart';
+import 'package:video_player_example/common/extensions.dart';
 
 class VideoControlsWidget extends StatelessWidget {
   final bool playing;

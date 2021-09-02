@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:video_player_example/presentation/video_screen.dart';
 import 'package:video_player_example/redux/app_reducer.dart';
 import 'package:video_player_example/redux/app_state.dart';
 import 'package:video_player_example/redux/session_middleware.dart';
-import 'package:video_player_example/video_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
