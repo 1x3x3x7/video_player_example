@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:video_player_example/presentation/thumbnail_widget.dart';
 import 'package:video_player_example/presentation/video_controls_widget.dart';
 import 'package:video_player_example/presentation/video_overlay_widget.dart';
 import 'package:video_player_example/presentation/video_widget.dart';
@@ -36,6 +37,12 @@ class _VideoScreenState extends State<VideoScreen> {
                 .exercises[
                     (store.state.sessionState as SessionLoaded).playingIndex]
                 .title
+            : "",
+        thumbnail: store.state.sessionState is SessionLoaded
+            ? (store.state.sessionState as SessionLoaded)
+                .exercises[
+                    (store.state.sessionState as SessionLoaded).playingIndex]
+                .thumbnail
             : "",
         onPlay: () => store.dispatch(SessionPlayAction()),
         onPause: () => store.dispatch(SessionPauseAction()),
@@ -79,21 +86,22 @@ class _VideoScreenState extends State<VideoScreen> {
               onNext: vm.onNext,
             ),
             Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width,
-              alignment: Alignment.center,
-              child: Stack(
-                children: [
-                  VideoWidget(controller: state.controller, aspectRatio: 1),
-                  Align(
-                      alignment: Alignment.topLeft,
-                      child: VideoOverlayWidget(
-                          countdownTime: vm.countdownTime,
-                          title: vm.exerciseTitle,
-                          onEnd: vm.onNext))
-                ],
-              ),
-            )
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width,
+                alignment: Alignment.center,
+                child: Stack(
+                  children: [
+                    VideoWidget(controller: state.controller, aspectRatio: 1),
+                    if (!state.playing)
+                      ThumbnailWidget(aspectRatio: 1, url: vm.thumbnail),
+                    Align(
+                        alignment: Alignment.topLeft,
+                        child: VideoOverlayWidget(
+                            countdownTime: vm.countdownTime,
+                            title: vm.exerciseTitle,
+                            onEnd: vm.onNext))
+                  ],
+                ))
           ],
         ),
       );
@@ -121,6 +129,7 @@ class _SessionScreenViewModel {
   final countdownTime;
   final double stopwatchTime;
   final exerciseTitle;
+  final thumbnail;
 
   _SessionScreenViewModel({
     required this.state,
@@ -128,6 +137,7 @@ class _SessionScreenViewModel {
     required this.countdownTime,
     required this.stopwatchTime,
     required this.exerciseTitle,
+    required this.thumbnail,
     required this.onPause,
     required this.onPlay,
     required this.onNext,
