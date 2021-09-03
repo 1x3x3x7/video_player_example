@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:video_player_example/data/ticker_repository.dart';
+import 'package:video_player_example/data/workout_repository.dart';
 import 'package:video_player_example/presentation/video_screen.dart';
 import 'package:video_player_example/redux/app_reducer.dart';
 import 'package:video_player_example/redux/app_state.dart';
@@ -17,8 +19,11 @@ final theme = ThemeData(
 );
 
 class MyApp extends StatelessWidget {
-  final store = Store<AppState>(appReducer,
-      initialState: AppState.initial(), middleware: [SessionMiddleware()]);
+  final tickerRepository = TickerRepository();
+  final workoutRepository = WorkoutRepository();
+  late final store = Store<AppState>(appReducer,
+      initialState: AppState.initial(),
+      middleware: [SessionMiddleware(tickerRepository, workoutRepository)]);
 
   @override
   Widget build(BuildContext context) {

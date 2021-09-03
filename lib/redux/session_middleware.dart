@@ -1,14 +1,14 @@
 import 'package:redux/redux.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_player_example/data/ticker_repository.dart';
-import 'package:video_player_example/data/workout_repository.dart';
 import 'package:video_player_example/redux/app_state.dart';
 import 'package:video_player_example/redux/session_actions.dart';
 import 'package:video_player_example/redux/session_state.dart';
 
 class SessionMiddleware implements MiddlewareClass<SessionState> {
-  final workoutRepository = WorkoutRepository();
-  final tickerRepository = TickerRepository();
+  final workoutRepository;
+  final tickerRepository;
+
+  const SessionMiddleware(this.tickerRepository, this.workoutRepository);
 
   @override
   call(Store store, action, NextDispatcher next) async {

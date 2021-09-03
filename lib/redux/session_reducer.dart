@@ -3,10 +3,10 @@ import 'package:video_player_example/redux/session_actions.dart';
 import 'package:video_player_example/redux/session_state.dart';
 
 final sessionReducer = combineReducers<SessionState>([
-  TypedReducer<SessionState, SessionStartInitializingAction>(_onLoad),
+  TypedReducer<SessionState, SessionStartInitializingAction>(_onInitializing),
   TypedReducer<SessionState, SessionErrorAction>(_onError),
-  TypedReducer<SessionState, SessionInitializedAction>(_onResult),
-  TypedReducer<SessionState, SessionInitNextAction>(_onNext),
+  TypedReducer<SessionState, SessionInitializedAction>(_onInitialized),
+  TypedReducer<SessionState, SessionInitNextAction>(_onNextInitializing),
   TypedReducer<SessionState, SessionNextInitializedAction>(_onNextInitialized),
   TypedReducer<SessionState, SessionPlayAction>(_onPlay),
   TypedReducer<SessionState, SessionPauseAction>(_onPause),
@@ -14,24 +14,27 @@ final sessionReducer = combineReducers<SessionState>([
   TypedReducer<SessionState, SessionTickAction>(_onTick),
 ]);
 
-SessionState _onLoad(
+SessionState _onInitializing(
         SessionState state, SessionStartInitializingAction action) =>
     SessionLoading();
 
 SessionState _onError(SessionState state, SessionErrorAction action) =>
     SessionError();
 
-SessionState _onResult(SessionState state, SessionInitializedAction action) {
+SessionState _onInitialized(
+    SessionState state, SessionInitializedAction action) {
   SessionState _state = SessionLoaded(
       exercises: action.exercises,
       controller: action.controller,
       countdownTime: action.exercises[0].duration.toDouble(),
-      playing: true);
+      delayTime: action.exercises[0].delay.toDouble(),
+      playing: false);
 
   return _state;
 }
 
-SessionState _onNext(SessionState state, SessionInitNextAction action) =>
+SessionState _onNextInitializing(
+        SessionState state, SessionInitNextAction action) =>
     state is SessionLoaded ? state.copyWith() : state;
 
 SessionState _onNextInitialized(
@@ -42,7 +45,9 @@ SessionState _onNextInitialized(
             playingIndex: action.playingIndex,
             countdownTime:
                 state.exercises[action.playingIndex].duration.toDouble(),
-            playing: true)
+            delayTime: state.exercises[action.playingIndex].delay.toDouble(),
+            playing: false,
+            started: false)
         : state;
 
 SessionState _onPlay(SessionState state, SessionPlayAction action) =>
@@ -56,9 +61,15 @@ SessionState _onEnd(SessionState state, SessionEndAction action) =>
 
 SessionState _onTick(SessionState state, SessionTickAction action) {
   if (state is SessionLoaded) {
+    print(state.delayTime);
     return state.copyWith(
-        countdownTime: state.countdownTime - action.seconds,
-        stopwatchTime: state.stopwatchTime + action.seconds);
+        delayTime:
+            !state.started ? state.delayTime - action.seconds : state.delayTime,
+        countdownTime: state.started
+            ? state.countdownTime - action.seconds
+            : state.countdownTime,
+        stopwatchTime: state.stopwatchTime + action.seconds,
+        started: state.delayTime < 0.1 ? true : false);
   } else
     return state;
 }

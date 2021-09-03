@@ -13,46 +13,46 @@ class VideoOverlayWidget extends StatelessWidget {
   final String title;
   final Function onEnd;
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Color(0x01000000),
-      margin: EdgeInsets.all(8),
-      child: Container(
-        margin: EdgeInsets.all(4),
-        height: 68,
-        width: 86,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              countdownTime < 0.1 ? end() : coundown(),
-              style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String end() {
+  String get end {
     onEnd();
-    return 'end';
+    return '00:00';
   }
 
-  String coundown() {
+  String get coundown {
     debugPrint('countdownTime = $countdownTime');
     return countdownTime.toInt().stopwatch();
   }
+
+  @override
+  Widget build(BuildContext context) => buildOverlay();
+
+  Widget buildOverlay() => Wrap(children: [
+        Card(
+          color: Color(0x01000000),
+          margin: EdgeInsets.all(8),
+          child: Container(
+            margin: EdgeInsets.all(4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  countdownTime < 0.1 ? end : coundown,
+                  style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]);
 }

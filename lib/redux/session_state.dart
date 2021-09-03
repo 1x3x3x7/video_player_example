@@ -26,16 +26,20 @@ class SessionLoaded implements SessionState {
   SessionLoaded(
       {required this.exercises,
       required this.controller,
-      this.playing = true,
+      this.playing = false,
+      this.started = false,
       this.playingIndex = 0,
-      this.countdownTime = 999,
+      this.delayTime = 0,
+      this.countdownTime = double.infinity,
       this.stopwatchTime = 0});
 
   final VideoPlayerController controller;
   final List<Exercise> exercises;
   final bool playing;
+  final bool started;
   final int playingIndex;
 
+  final double delayTime;
   final double countdownTime;
   final double stopwatchTime;
 
@@ -47,7 +51,9 @@ class SessionLoaded implements SessionState {
   SessionLoaded copyWith({
     VideoPlayerController? controller,
     bool? playing,
+    bool? started,
     int? playingIndex,
+    double? delayTime,
     double? countdownTime,
     double? stopwatchTime,
     List<Exercise>? exercises,
@@ -55,7 +61,9 @@ class SessionLoaded implements SessionState {
     return SessionLoaded(
       controller: controller ?? this.controller,
       playing: playing ?? this.playing,
+      started: started ?? this.started,
       playingIndex: playingIndex ?? this.playingIndex,
+      delayTime: delayTime ?? this.delayTime,
       countdownTime: countdownTime ?? this.countdownTime,
       stopwatchTime: stopwatchTime ?? this.stopwatchTime,
       exercises: exercises ?? this.exercises,

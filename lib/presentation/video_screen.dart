@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:video_player_example/presentation/delay_widget.dart';
 import 'package:video_player_example/presentation/thumbnail_widget.dart';
 import 'package:video_player_example/presentation/video_controls_widget.dart';
 import 'package:video_player_example/presentation/video_overlay_widget.dart';
@@ -28,9 +29,15 @@ class _VideoScreenState extends State<VideoScreen> {
         playing: store.state.sessionState is SessionLoaded
             ? (store.state.sessionState as SessionLoaded).playing
             : false,
+        started: store.state.sessionState is SessionLoaded
+            ? (store.state.sessionState as SessionLoaded).started
+            : false,
+        delayTime: store.state.sessionState is SessionLoaded
+            ? (store.state.sessionState as SessionLoaded).delayTime
+            : 0.0,
         countdownTime: store.state.sessionState is SessionLoaded
             ? (store.state.sessionState as SessionLoaded).countdownTime
-            : 999.0,
+            : double.infinity,
         stopwatchTime: _getStopwatchTimer(store.state.sessionState),
         exerciseTitle: store.state.sessionState is SessionLoaded
             ? (store.state.sessionState as SessionLoaded)
@@ -92,8 +99,9 @@ class _VideoScreenState extends State<VideoScreen> {
                 child: Stack(
                   children: [
                     VideoWidget(controller: state.controller, aspectRatio: 1),
-                    if (!state.playing)
+                    if (!vm.playing)
                       ThumbnailWidget(aspectRatio: 1, url: vm.thumbnail),
+                    if (!vm.started) DelayWidget(delayTime: vm.delayTime),
                     Align(
                         alignment: Alignment.topLeft,
                         child: VideoOverlayWidget(
@@ -126,6 +134,8 @@ class _SessionScreenViewModel {
   final void Function() onNext;
 
   final playing;
+  final started;
+  final delayTime;
   final countdownTime;
   final double stopwatchTime;
   final exerciseTitle;
@@ -134,6 +144,8 @@ class _SessionScreenViewModel {
   _SessionScreenViewModel({
     required this.state,
     required this.playing,
+    required this.started,
+    required this.delayTime,
     required this.countdownTime,
     required this.stopwatchTime,
     required this.exerciseTitle,
