@@ -115,7 +115,7 @@ class _VideoScreenState extends State<VideoScreen> {
       );
     } else if (vm.state is SessionError) {
       return Center(
-        child: Text('ERROR'),
+        child: Text('Error: ${(vm.state as SessionError).error.toString()}'),
       );
     } else if (vm.state is SessionEnd) {
       final min = vm.stopwatchTime.toInt().stopwatch();

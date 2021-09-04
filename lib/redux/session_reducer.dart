@@ -19,7 +19,7 @@ SessionState _onInitializing(
     SessionLoading();
 
 SessionState _onError(SessionState state, SessionErrorAction action) =>
-    SessionError();
+    SessionError(action.exception);
 
 SessionState _onInitialized(
     SessionState state, SessionInitializedAction action) {

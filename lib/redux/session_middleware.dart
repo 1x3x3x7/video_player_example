@@ -29,8 +29,8 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
         store.dispatch(SessionInitializedAction(controller, exercises));
 
         store.dispatch(SessionPlayAction());
-      } catch (error) {
-        store.dispatch(SessionErrorAction());
+      } catch (e) {
+        store.dispatch(SessionErrorAction(e));
       }
     }
 
@@ -69,8 +69,8 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
             store.dispatch(SessionNextInitializedAction(controller, nextIndex));
 
             store.dispatch(SessionPlayAction());
-          } catch (error) {
-            store.dispatch(SessionErrorAction());
+          } catch (e) {
+            store.dispatch(SessionErrorAction(e));
           }
         } else {
           workoutRepository.doneWorkout();

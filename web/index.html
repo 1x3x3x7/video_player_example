@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -26,6 +27,7 @@
   <title>video_player_example</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
@@ -42,6 +44,12 @@
       scriptTag.src = 'main.dart.js';
       scriptTag.type = 'application/javascript';
       document.body.append(scriptTag);
+
+      // Add support HLS
+      var hlsScriptTag = document.createElement('script');
+      hlsScriptTag.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+      hlsScriptTag.type = 'application/javascript';
+      document.body.append(hlsScriptTag);
     }
 
     if ('serviceWorker' in navigator) {
@@ -95,4 +103,5 @@
     }
   </script>
 </body>
+
 </html>

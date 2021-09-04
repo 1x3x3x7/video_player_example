@@ -7,7 +7,11 @@ abstract class SessionState {}
 
 class SessionInitial implements SessionState {}
 
-class SessionError implements SessionState {}
+class SessionError implements SessionState {
+  final error;
+
+  SessionError(this.error);
+}
 
 class SessionLoading implements SessionState {}
 

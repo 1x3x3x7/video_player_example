@@ -7,7 +7,11 @@ class SessionInitAction {
   SessionInitAction(this.id);
 }
 
-class SessionErrorAction {}
+class SessionErrorAction {
+  final exception;
+
+  SessionErrorAction(this.exception);
+}
 
 class SessionPlayAction {}
 
