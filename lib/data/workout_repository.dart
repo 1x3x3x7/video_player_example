@@ -33,4 +33,8 @@ class WorkoutRepository {
   }
 
   Future doneWorkout() => Future.wait<dynamic>([]);
+  Future loadWorkouts(type) => Future.wait<dynamic>([]);
+  Future loadDetail(id) => Future.wait<dynamic>([]);
+  Future loadActivity(date) => Future.wait<dynamic>([]);
+  Future addActivity(data) => Future.wait<dynamic>([]);
 }
