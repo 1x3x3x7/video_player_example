@@ -9,6 +9,7 @@ class ThumbnailWidget extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) =>
-      AspectRatio(aspectRatio: aspectRatio, child: Image.network(url));
+  Widget build(BuildContext context) => AspectRatio(
+      aspectRatio: aspectRatio,
+      child: url.startsWith('assets') ? Image.asset(url) : Image.network(url));
 }

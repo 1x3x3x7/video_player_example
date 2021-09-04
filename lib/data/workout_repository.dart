@@ -12,7 +12,7 @@ class WorkoutRepository {
                   thumbnail:
                       'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/front_lunge/thumbnail.jpg',
                   duration: 5,
-                  delay: 3),
+                  delay: 0),
               Exercise(
                   title: 'Hip circles',
                   url:
@@ -21,6 +21,12 @@ class WorkoutRepository {
                       'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/hip_circles/thumbnail.jpg',
                   duration: 5,
                   delay: 3),
+              Exercise(
+                  title: 'Rest',
+                  url: 'assets/rest/rest.mp4',
+                  thumbnail: 'assets/rest/thumbnail.jpg',
+                  duration: 30,
+                  delay: 0),
               Exercise(
                   title: 'Pike stretch',
                   url:

@@ -18,8 +18,11 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
       store.dispatch(SessionStartInitializingAction());
       try {
         final exercises = await workoutRepository.loadWorkout(action.id);
+        final nextExerciseUrl = exercises[0].url;
         final VideoPlayerController controller =
-            VideoPlayerController.network(exercises[0].url);
+            nextExerciseUrl.startsWith('assets')
+                ? VideoPlayerController.asset(nextExerciseUrl)
+                : VideoPlayerController.network(nextExerciseUrl);
         await controller.initialize();
         await controller.setLooping(true);
 
@@ -53,8 +56,11 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
         var nextIndex = state.playingIndex + 1;
         if (nextIndex < state.exercises.length) {
           try {
+            final nextExerciseUrl = state.exercises[nextIndex].url;
             final VideoPlayerController controller =
-                VideoPlayerController.network(state.exercises[nextIndex].url);
+                nextExerciseUrl.startsWith('assets')
+                    ? VideoPlayerController.asset(nextExerciseUrl)
+                    : VideoPlayerController.network(nextExerciseUrl);
 
             await state.controller.pause();
             await controller.initialize();

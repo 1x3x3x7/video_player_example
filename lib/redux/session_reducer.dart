@@ -28,7 +28,8 @@ SessionState _onInitialized(
       controller: action.controller,
       countdownTime: action.exercises[0].duration.toDouble(),
       delayTime: action.exercises[0].delay.toDouble(),
-      playing: false);
+      playing: false,
+      started: action.exercises[0].delay == 0 ? true : false);
 
   return _state;
 }
@@ -47,7 +48,8 @@ SessionState _onNextInitialized(
                 state.exercises[action.playingIndex].duration.toDouble(),
             delayTime: state.exercises[action.playingIndex].delay.toDouble(),
             playing: false,
-            started: false)
+            started:
+                state.exercises[action.playingIndex].delay == 0 ? true : false)
         : state;
 
 SessionState _onPlay(SessionState state, SessionPlayAction action) =>
@@ -62,14 +64,15 @@ SessionState _onEnd(SessionState state, SessionEndAction action) =>
 SessionState _onTick(SessionState state, SessionTickAction action) {
   if (state is SessionLoaded) {
     print(state.delayTime);
+    var started = state.delayTime < 0.1 ? true : false;
     return state.copyWith(
         delayTime:
-            !state.started ? state.delayTime - action.seconds : state.delayTime,
-        countdownTime: state.started
+            !started ? state.delayTime - action.seconds : state.delayTime,
+        countdownTime: started
             ? state.countdownTime - action.seconds
             : state.countdownTime,
         stopwatchTime: state.stopwatchTime + action.seconds,
-        started: state.delayTime < 0.1 ? true : false);
+        started: started);
   } else
     return state;
 }
