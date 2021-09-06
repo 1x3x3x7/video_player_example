@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:video_player_example/common/tts_controller.dart';
 import 'package:video_player_example/data/ticker_repository.dart';
 import 'package:video_player_example/data/workout_repository.dart';
 import 'package:video_player_example/presentation/video_screen.dart';
@@ -21,9 +22,12 @@ final theme = ThemeData(
 class MyApp extends StatelessWidget {
   final tickerRepository = TickerRepository();
   final workoutRepository = WorkoutRepository();
+  final ttsController = TtsController();
   late final store = Store<AppState>(appReducer,
       initialState: AppState.initial(),
-      middleware: [SessionMiddleware(tickerRepository, workoutRepository)]);
+      middleware: [
+        SessionMiddleware(tickerRepository, workoutRepository, ttsController)
+      ]);
 
   @override
   Widget build(BuildContext context) {

@@ -1,14 +1,18 @@
 import 'package:redux/redux.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_example/common/tts_controller.dart';
+import 'package:video_player_example/data/ticker_repository.dart';
 import 'package:video_player_example/redux/app_state.dart';
 import 'package:video_player_example/redux/session_actions.dart';
 import 'package:video_player_example/redux/session_state.dart';
 
 class SessionMiddleware implements MiddlewareClass<SessionState> {
   final workoutRepository;
-  final tickerRepository;
+  final TickerRepository tickerRepository;
+  final TtsController ttsController;
 
-  const SessionMiddleware(this.tickerRepository, this.workoutRepository);
+  const SessionMiddleware(
+      this.tickerRepository, this.workoutRepository, this.ttsController);
 
   @override
   call(Store store, action, NextDispatcher next) async {
@@ -79,6 +83,23 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
         }
       }
     }
+
+    if (action is SessionTickAction) {
+      if (state is SessionLoaded) {
+        if (state.delayTime.toInt() ==
+                state.exercises[state.playingIndex].delay &&
+            state.countdownTime.toInt() ==
+                state.exercises[state.playingIndex].duration) {
+          ttsController.speak(state.exercises[state.playingIndex].title);
+        }
+        if (state.delayTime == 1.0) ttsController.speak('start');
+        if (state.countdownTime.toInt() <= 4 &&
+            state.countdownTime.toInt() > 1) {
+          ttsController.speak((state.countdownTime.toInt() - 1).toString());
+        }
+      }
+    }
+
     next(action);
   }
 }
