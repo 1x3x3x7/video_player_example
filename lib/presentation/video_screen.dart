@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:video_player_example/presentation/delay_widget.dart';
+import 'package:video_player_example/presentation/session_progress_widget.dart';
 import 'package:video_player_example/presentation/thumbnail_widget.dart';
 import 'package:video_player_example/presentation/video_controls_widget.dart';
 import 'package:video_player_example/presentation/video_overlay_widget.dart';
@@ -51,6 +52,12 @@ class _VideoScreenState extends State<VideoScreen> {
                     (store.state.sessionState as SessionLoaded).playingIndex]
                 .thumbnail
             : "",
+        playingIndex: store.state.sessionState is SessionLoaded
+            ? (store.state.sessionState as SessionLoaded).playingIndex
+            : 0,
+        exerciseCount: store.state.sessionState is SessionLoaded
+            ? (store.state.sessionState as SessionLoaded).exercises.length
+            : 0,
         onPlay: () => store.dispatch(SessionPlayAction()),
         onPause: () => store.dispatch(SessionPauseAction()),
         onNext: () => store.dispatch(SessionInitNextAction()),
@@ -109,7 +116,9 @@ class _VideoScreenState extends State<VideoScreen> {
                             title: vm.exerciseTitle,
                             onEnd: vm.onNext))
                   ],
-                ))
+                )),
+            SessionProgressWidget(
+                index: vm.playingIndex, size: vm.exerciseCount)
           ],
         ),
       );
@@ -140,6 +149,8 @@ class _SessionScreenViewModel {
   final double stopwatchTime;
   final exerciseTitle;
   final thumbnail;
+  final playingIndex;
+  final exerciseCount;
 
   _SessionScreenViewModel({
     required this.state,
@@ -150,6 +161,8 @@ class _SessionScreenViewModel {
     required this.stopwatchTime,
     required this.exerciseTitle,
     required this.thumbnail,
+    required this.playingIndex,
+    required this.exerciseCount,
     required this.onPause,
     required this.onPlay,
     required this.onNext,

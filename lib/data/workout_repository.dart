@@ -34,6 +34,36 @@ class WorkoutRepository {
                   thumbnail:
                       'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/pike_stretch/thumbnail.jpg',
                   duration: 10,
+                  delay: 3),
+              Exercise(
+                  title: 'Front lunge',
+                  url:
+                      'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/front_lunge/playlist.m3u8',
+                  thumbnail:
+                      'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/front_lunge/thumbnail.jpg',
+                  duration: 10,
+                  delay: 5),
+              Exercise(
+                  title: 'Hip circles',
+                  url:
+                      'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/hip_circles/playlist.m3u8',
+                  thumbnail:
+                      'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/hip_circles/thumbnail.jpg',
+                  duration: 10,
+                  delay: 3),
+              Exercise(
+                  title: 'Rest',
+                  url: 'assets/rest/rest.mp4',
+                  thumbnail: 'assets/rest/thumbnail.jpg',
+                  duration: 15,
+                  delay: 0),
+              Exercise(
+                  title: 'Pike stretch',
+                  url:
+                      'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/pike_stretch/playlist.m3u8',
+                  thumbnail:
+                      'https://raw.githubusercontent.com/1x3x3x7/m3u8_samples/main/pike_stretch/thumbnail.jpg',
+                  duration: 10,
                   delay: 3)
             ]);
   }
