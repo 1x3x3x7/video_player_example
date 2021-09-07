@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_example/data/exercise.dart';
 
@@ -62,6 +63,10 @@ class SessionLoaded implements SessionState {
     double? stopwatchTime,
     List<Exercise>? exercises,
   }) {
+    if (controller != null)
+      WidgetsBinding.instance?.addPostFrameCallback((_) async {
+        await this.controller.dispose();
+      });
     return SessionLoaded(
       controller: controller ?? this.controller,
       playing: playing ?? this.playing,
