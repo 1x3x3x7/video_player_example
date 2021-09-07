@@ -2,12 +2,13 @@ import 'package:redux/redux.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_example/common/tts_controller.dart';
 import 'package:video_player_example/data/ticker_repository.dart';
+import 'package:video_player_example/data/workout_repository.dart';
 import 'package:video_player_example/redux/app_state.dart';
 import 'package:video_player_example/redux/session_actions.dart';
 import 'package:video_player_example/redux/session_state.dart';
 
 class SessionMiddleware implements MiddlewareClass<SessionState> {
-  final workoutRepository;
+  final WorkoutRepository workoutRepository;
   final TickerRepository tickerRepository;
   final TtsController ttsController;
 
@@ -22,17 +23,21 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
       store.dispatch(SessionStartInitializingAction());
       try {
         final exercises = await workoutRepository.loadWorkout(action.id);
-        final nextExerciseUrl = exercises[0].url;
-        final VideoPlayerController controller =
-            nextExerciseUrl.startsWith('assets')
-                ? VideoPlayerController.asset(nextExerciseUrl)
-                : VideoPlayerController.network(nextExerciseUrl);
-        await controller.initialize();
-        await controller.setLooping(true);
+        if (exercises.isEmpty) {
+          store.dispatch(SessionEmptyAction());
+        } else {
+          final nextExerciseUrl = exercises[0].url;
+          final VideoPlayerController controller =
+              nextExerciseUrl.startsWith('assets')
+                  ? VideoPlayerController.asset(nextExerciseUrl)
+                  : VideoPlayerController.network(nextExerciseUrl);
+          await controller.initialize();
+          await controller.setLooping(true);
 
-        store.dispatch(SessionInitializedAction(controller, exercises));
+          store.dispatch(SessionInitializedAction(controller, exercises));
 
-        store.dispatch(SessionPlayAction());
+          store.dispatch(SessionPlayAction());
+        }
       } catch (e) {
         store.dispatch(SessionErrorAction(e));
       }
@@ -69,7 +74,6 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
             await state.controller.pause();
             await controller.initialize();
             await controller.setLooping(true);
-// TODO need dispose old controller
             store.dispatch(SessionNextInitializedAction(controller, nextIndex));
 
             store.dispatch(SessionPlayAction());

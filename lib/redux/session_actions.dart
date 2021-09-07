@@ -7,6 +7,8 @@ class SessionInitAction {
   SessionInitAction(this.id);
 }
 
+class SessionEmptyAction {}
+
 class SessionErrorAction {
   final exception;
 

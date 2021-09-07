@@ -16,6 +16,8 @@ class SessionError implements SessionState {
 
 class SessionLoading implements SessionState {}
 
+class SessionEmpty implements SessionState {}
+
 class SessionEnd implements SessionState {
   final double stopwatchTime;
 

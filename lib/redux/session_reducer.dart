@@ -4,6 +4,7 @@ import 'package:video_player_example/redux/session_state.dart';
 
 final sessionReducer = combineReducers<SessionState>([
   TypedReducer<SessionState, SessionStartInitializingAction>(_onInitializing),
+  TypedReducer<SessionState, SessionEmptyAction>(_onEmpty),
   TypedReducer<SessionState, SessionErrorAction>(_onError),
   TypedReducer<SessionState, SessionInitializedAction>(_onInitialized),
   TypedReducer<SessionState, SessionInitNextAction>(_onNextInitializing),
@@ -17,6 +18,9 @@ final sessionReducer = combineReducers<SessionState>([
 SessionState _onInitializing(
         SessionState state, SessionStartInitializingAction action) =>
     SessionLoading();
+
+SessionState _onEmpty(SessionState state, SessionEmptyAction action) =>
+    SessionEmpty();
 
 SessionState _onError(SessionState state, SessionErrorAction action) =>
     SessionError(action.exception);

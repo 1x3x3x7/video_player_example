@@ -87,6 +87,10 @@ class _VideoScreenState extends State<VideoScreen> {
         alignment: FractionalOffset.center,
         child: CircularProgressIndicator(),
       );
+    } else if (vm.state is SessionEmpty) {
+      return Center(
+        child: Text('No Content'),
+      );
     } else if (vm.state is SessionLoaded) {
       final state = vm.state as SessionLoaded;
       return Container(
