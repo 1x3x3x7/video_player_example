@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:video_player_example/presentation/delay_widget.dart';
 import 'package:video_player_example/presentation/session_progress_widget.dart';
 import 'package:video_player_example/presentation/thumbnail_widget.dart';
@@ -25,58 +26,13 @@ class _VideoScreenState extends State<VideoScreen> {
       onInit: (store) {
         store.dispatch(SessionInitAction(0));
       },
-      converter: (store) => _SessionScreenViewModel(
-        state: store.state.sessionState,
-        playing: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded).playing
-            : false,
-        started: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded).started
-            : false,
-        delayTime: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded).delayTime
-            : 0.0,
-        countdownTime: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded).countdownTime
-            : double.infinity,
-        stopwatchTime: _getStopwatchTimer(store.state.sessionState),
-        exerciseTitle: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded)
-                .exercises[
-                    (store.state.sessionState as SessionLoaded).playingIndex]
-                .title
-            : "",
-        thumbnail: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded)
-                .exercises[
-                    (store.state.sessionState as SessionLoaded).playingIndex]
-                .thumbnail
-            : "",
-        playingIndex: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded).playingIndex
-            : 0,
-        exerciseCount: store.state.sessionState is SessionLoaded
-            ? (store.state.sessionState as SessionLoaded).exercises.length
-            : 0,
-        onPlay: () => store.dispatch(SessionPlayAction()),
-        onPause: () => store.dispatch(SessionPauseAction()),
-        onNext: () => store.dispatch(SessionInitNextAction()),
-      ),
+      converter: (store) => _SessionScreenViewModel.fromStore(store),
       builder: (context, vm) => Scaffold(
           appBar: AppBar(
             title: Text("Video"),
           ),
           body: _buildVisible(vm)),
     );
-  }
-
-  double _getStopwatchTimer(SessionState state) {
-    if (state is SessionLoaded)
-      return state.stopwatchTime;
-    else if (state is SessionEnd)
-      return state.stopwatchTime;
-    else
-      return 0.0;
   }
 
   Widget _buildVisible(_SessionScreenViewModel vm) {
@@ -128,7 +84,7 @@ class _VideoScreenState extends State<VideoScreen> {
       );
     } else if (vm.state is SessionError) {
       return Center(
-        child: Text('Error: ${(vm.state as SessionError).error.toString()}'),
+        child: Text('Error: ${vm.error}'),
       );
     } else if (vm.state is SessionEnd) {
       final min = vm.stopwatchTime.toInt().stopwatch();
@@ -155,6 +111,7 @@ class _SessionScreenViewModel {
   final thumbnail;
   final playingIndex;
   final exerciseCount;
+  final error;
 
   _SessionScreenViewModel({
     required this.state,
@@ -167,8 +124,61 @@ class _SessionScreenViewModel {
     required this.thumbnail,
     required this.playingIndex,
     required this.exerciseCount,
+    required this.error,
     required this.onPause,
     required this.onPlay,
     required this.onNext,
   });
+
+  static _SessionScreenViewModel fromStore(Store<AppState> store) {
+    double _getStopwatchTimer(SessionState state) {
+      if (state is SessionLoaded)
+        return state.stopwatchTime;
+      else if (state is SessionEnd)
+        return state.stopwatchTime;
+      else
+        return 0.0;
+    }
+
+    return _SessionScreenViewModel(
+      state: store.state.sessionState,
+      playing: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded).playing
+          : false,
+      started: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded).started
+          : false,
+      delayTime: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded).delayTime
+          : 0.0,
+      countdownTime: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded).countdownTime
+          : double.infinity,
+      stopwatchTime: _getStopwatchTimer(store.state.sessionState),
+      exerciseTitle: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded)
+              .exercises[
+                  (store.state.sessionState as SessionLoaded).playingIndex]
+              .title
+          : "",
+      thumbnail: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded)
+              .exercises[
+                  (store.state.sessionState as SessionLoaded).playingIndex]
+              .thumbnail
+          : "",
+      playingIndex: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded).playingIndex
+          : 0,
+      exerciseCount: store.state.sessionState is SessionLoaded
+          ? (store.state.sessionState as SessionLoaded).exercises.length
+          : 0,
+      error: store.state.sessionState is SessionError
+          ? (store.state.sessionState as SessionError).error.toString()
+          : "",
+      onPlay: () => store.dispatch(SessionPlayAction()),
+      onPause: () => store.dispatch(SessionPauseAction()),
+      onNext: () => store.dispatch(SessionInitNextAction()),
+    );
+  }
 }
