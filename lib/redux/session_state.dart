@@ -9,7 +9,7 @@ abstract class SessionState {}
 class SessionInitial implements SessionState {}
 
 class SessionError implements SessionState {
-  final error;
+  final Exception error;
 
   SessionError(this.error);
 }
