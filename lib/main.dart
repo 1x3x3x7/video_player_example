@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:redux/redux.dart';
+import 'package:video_player_example/common/app_routes.dart';
+import 'package:video_player_example/common/extensions.dart';
 import 'package:video_player_example/common/tts_controller.dart';
 import 'package:video_player_example/data/ticker_repository.dart';
 import 'package:video_player_example/data/workout_repository.dart';
-import 'package:video_player_example/presentation/video_screen.dart';
-import 'package:video_player_example/redux/app_reducer.dart';
-import 'package:video_player_example/redux/app_state.dart';
-import 'package:video_player_example/redux/session_middleware.dart';
+import 'package:video_player_example/presentation/session/video_screen.dart';
+import 'package:video_player_example/presentation/session_end/session_end_screen.dart';
+import 'package:video_player_example/redux/app/app_reducer.dart';
+import 'package:video_player_example/redux/app/app_state.dart';
+import 'package:video_player_example/redux/session/session_middleware.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +30,7 @@ class MyApp extends StatelessWidget {
   late final store = Store<AppState>(appReducer,
       initialState: AppState.initial(),
       middleware: [
+        const NavigationMiddleware<AppState>(),
         SessionMiddleware(tickerRepository, workoutRepository, ttsController)
       ]);
 
@@ -36,8 +41,21 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Video Player',
         theme: theme,
-        home: VideoScreen(),
+        navigatorKey: NavigatorHolder.navigatorKey,
+        onGenerateRoute: _getRoute,
       ),
     );
+  }
+
+  Route _getRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case AppRoutes.session_screen:
+        return VideoScreen().buildRoute(settings);
+      case AppRoutes.session_end_screen:
+        return SessionEndScreen(minutes: settings.arguments as String)
+            .buildRoute(settings);
+      default:
+        throw ArgumentError('No agrument ${settings.name}');
+    }
   }
 }

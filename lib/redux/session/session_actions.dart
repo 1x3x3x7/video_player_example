@@ -1,5 +1,5 @@
 import 'package:video_player/video_player.dart';
-import 'package:video_player_example/data/exercise.dart';
+import 'package:video_player_example/domain/exercise.dart';
 
 class SessionInitAction {
   final int id;
@@ -38,9 +38,4 @@ class SessionNextInitializedAction {
   final VideoPlayerController controller;
   final int playingIndex;
   SessionNextInitializedAction(this.controller, this.playingIndex);
-}
-
-class SessionEndAction {
-  final double seconds;
-  SessionEndAction(this.seconds);
 }

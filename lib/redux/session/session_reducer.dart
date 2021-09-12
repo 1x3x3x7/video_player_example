@@ -1,6 +1,6 @@
 import 'package:redux/redux.dart';
-import 'package:video_player_example/redux/session_actions.dart';
-import 'package:video_player_example/redux/session_state.dart';
+import 'package:video_player_example/redux/session/session_actions.dart';
+import 'package:video_player_example/redux/session/session_state.dart';
 
 final sessionReducer = combineReducers<SessionState>([
   TypedReducer<SessionState, SessionStartInitializingAction>(_onInitializing),
@@ -11,7 +11,6 @@ final sessionReducer = combineReducers<SessionState>([
   TypedReducer<SessionState, SessionNextInitializedAction>(_onNextInitialized),
   TypedReducer<SessionState, SessionPlayAction>(_onPlay),
   TypedReducer<SessionState, SessionPauseAction>(_onPause),
-  TypedReducer<SessionState, SessionEndAction>(_onEnd),
   TypedReducer<SessionState, SessionTickAction>(_onTick),
 ]);
 
@@ -61,9 +60,6 @@ SessionState _onPlay(SessionState state, SessionPlayAction action) =>
 
 SessionState _onPause(SessionState state, SessionPauseAction action) =>
     state is SessionLoaded ? state.copyWith(playing: false) : state;
-
-SessionState _onEnd(SessionState state, SessionEndAction action) =>
-    SessionEnd(action.seconds);
 
 SessionState _onTick(SessionState state, SessionTickAction action) {
   if (state is SessionLoaded) {

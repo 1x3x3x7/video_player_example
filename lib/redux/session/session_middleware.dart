@@ -1,11 +1,14 @@
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:redux/redux.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_example/common/app_routes.dart';
+import 'package:video_player_example/common/extensions.dart';
 import 'package:video_player_example/common/tts_controller.dart';
 import 'package:video_player_example/data/ticker_repository.dart';
 import 'package:video_player_example/data/workout_repository.dart';
-import 'package:video_player_example/redux/app_state.dart';
-import 'package:video_player_example/redux/session_actions.dart';
-import 'package:video_player_example/redux/session_state.dart';
+import 'package:video_player_example/redux/app/app_state.dart';
+import 'package:video_player_example/redux/session/session_actions.dart';
+import 'package:video_player_example/redux/session/session_state.dart';
 
 class SessionMiddleware implements MiddlewareClass<SessionState> {
   final WorkoutRepository workoutRepository;
@@ -83,7 +86,8 @@ class SessionMiddleware implements MiddlewareClass<SessionState> {
         } else {
           workoutRepository.doneWorkout();
           tickerRepository.stop();
-          store.dispatch(SessionEndAction(state.stopwatchTime));
+          store.dispatch(NavigateToAction.replace(AppRoutes.session_end_screen,
+              arguments: state.stopwatchTime.toInt().stopwatch()));
         }
       }
     }

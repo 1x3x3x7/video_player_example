@@ -1,4 +1,4 @@
-import 'package:video_player_example/data/exercise.dart';
+import 'package:video_player_example/domain/exercise.dart';
 
 class WorkoutRepository {
   Future<List<Exercise>> loadWorkout(int id) async {

@@ -26,6 +26,7 @@ dependencies:
 
   redux: ^5.0.0
   flutter_redux: ^0.8.2 
+  flutter_redux_navigation: ^0.7.0
   video_player: ^2.1.10
   video_player_web_hls: ^0.1.1
   flutter_tts: ^3.2.2

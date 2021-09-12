@@ -1,4 +1,4 @@
-import 'package:video_player_example/redux/session_reducer.dart';
+import 'package:video_player_example/redux/session/session_reducer.dart';
 
 import 'app_state.dart';
 

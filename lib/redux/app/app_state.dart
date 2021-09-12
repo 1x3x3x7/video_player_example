@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:video_player_example/redux/session_state.dart';
+import 'package:video_player_example/redux/session/session_state.dart';
 
 @immutable
 class AppState {

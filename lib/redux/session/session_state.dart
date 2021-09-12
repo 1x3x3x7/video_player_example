@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_player_example/data/exercise.dart';
+import 'package:video_player_example/domain/exercise.dart';
 
 abstract class SessionState {}
 
