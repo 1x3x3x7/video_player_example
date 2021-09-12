@@ -12,11 +12,11 @@ class SessionProgressWidget extends StatelessWidget {
     final fonySize = MediaQuery.of(context).size.width / size;
     final color = (i, index) {
       if (i < index)
-        return Colors.black;
+        return Theme.of(context).hintColor;
       else if (i == index)
-        return Colors.lightBlue;
+        return Theme.of(context).primaryColor;
       else
-        return Colors.grey[300];
+        return Theme.of(context).focusColor;
     };
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

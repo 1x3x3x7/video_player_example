@@ -1,41 +1,14 @@
-import 'package:video_player/video_player.dart';
+import 'package:video_player_example/domain/api_response.dart';
 import 'package:video_player_example/domain/exercise.dart';
 
-class SessionInitAction {
+class SessionLoadAction {
   final int id;
 
-  SessionInitAction(this.id);
+  SessionLoadAction(this.id);
 }
 
-class SessionEmptyAction {}
+class SessionLoadedAction {
+  final ApiResponse<List<Exercise>> data;
 
-class SessionErrorAction {
-  final exception;
-
-  SessionErrorAction(this.exception);
-}
-
-class SessionPlayAction {}
-
-class SessionPauseAction {}
-
-class SessionInitNextAction {}
-
-class SessionTickAction {
-  final double seconds;
-  SessionTickAction(this.seconds);
-}
-
-class SessionStartInitializingAction {}
-
-class SessionInitializedAction {
-  final VideoPlayerController controller;
-  final List<Exercise> exercises;
-  SessionInitializedAction(this.controller, this.exercises);
-}
-
-class SessionNextInitializedAction {
-  final VideoPlayerController controller;
-  final int playingIndex;
-  SessionNextInitializedAction(this.controller, this.playingIndex);
+  SessionLoadedAction(this.data);
 }

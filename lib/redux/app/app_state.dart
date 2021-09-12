@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:video_player_example/domain/api_response.dart';
 import 'package:video_player_example/redux/session/session_state.dart';
+import 'package:video_player_example/redux/session/workout/workout_state.dart';
 
 @immutable
 class AppState {
@@ -10,7 +12,10 @@ class AppState {
   AppState({required this.sessionState});
 
   factory AppState.initial() {
-    return AppState(sessionState: SessionInitial());
+    return AppState(
+        sessionState: SessionState(
+            response: ApiResponse.loading('loading'),
+            workoutState: WorkoutInitial()));
   }
   AppState copyWith(SessionState? sessionState) {
     return AppState(sessionState: sessionState ?? this.sessionState);

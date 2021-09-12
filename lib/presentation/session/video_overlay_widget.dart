@@ -3,20 +3,11 @@ import 'package:video_player_example/common/extensions.dart';
 
 class VideoOverlayWidget extends StatelessWidget {
   VideoOverlayWidget(
-      {Key? key,
-      required this.countdownTime,
-      required this.title,
-      required this.onEnd})
+      {Key? key, required this.countdownTime, required this.title})
       : super(key: key);
 
   final double countdownTime;
   final String title;
-  final Function onEnd;
-
-  String get end {
-    onEnd();
-    return '00:00';
-  }
 
   String get coundown {
     debugPrint('countdownTime = $countdownTime');
@@ -44,7 +35,7 @@ class VideoOverlayWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  countdownTime < 0.1 ? end : coundown,
+                  countdownTime < 0.0 ? '00:00' : coundown,
                   style: TextStyle(
                       fontSize: 24,
                       color: Colors.white,

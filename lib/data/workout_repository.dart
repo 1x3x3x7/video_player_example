@@ -3,7 +3,7 @@ import 'package:video_player_example/domain/exercise.dart';
 class WorkoutRepository {
   Future<List<Exercise>> loadWorkout(int id) async {
     return await Future.delayed(
-        Duration(seconds: 0),
+        Duration(seconds: 1),
         () => [
               Exercise(
                   title: 'Front lunge',

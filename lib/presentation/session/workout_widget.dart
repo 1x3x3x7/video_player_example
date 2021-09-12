@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:video_player_example/domain/exercise.dart';
 import 'package:video_player_example/presentation/session/delay_widget.dart';
 import 'package:video_player_example/presentation/session/session_progress_widget.dart';
 import 'package:video_player_example/presentation/session/thumbnail_widget.dart';
@@ -8,46 +9,31 @@ import 'package:video_player_example/presentation/session/video_controls_widget.
 import 'package:video_player_example/presentation/session/video_overlay_widget.dart';
 import 'package:video_player_example/presentation/session/video_widget.dart';
 import 'package:video_player_example/redux/app/app_state.dart';
-import 'package:video_player_example/redux/session/session_actions.dart';
-import 'package:video_player_example/redux/session/session_state.dart';
+import 'package:video_player_example/redux/session/workout/workout_actions.dart';
+import 'package:video_player_example/redux/session/workout/workout_state.dart';
 
-class VideoScreen extends StatefulWidget {
-  VideoScreen({Key? key}) : super(key: key);
+class WorkoutWidget extends StatelessWidget {
+  final List<Exercise> exercises;
+  const WorkoutWidget({Key? key, required this.exercises}) : super(key: key);
 
-  @override
-  _VideoScreenState createState() => _VideoScreenState();
-}
-
-class _VideoScreenState extends State<VideoScreen> {
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, _SessionScreenViewModel>(
-      onInit: (store) {
-        store.dispatch(SessionInitAction(0));
-      },
-      converter: (store) => _SessionScreenViewModel.fromStore(store),
-      builder: (context, vm) => Scaffold(
-          appBar: AppBar(
-            title: Text("Video"),
-          ),
-          body: _buildVisible(vm)),
+    return StoreConnector<AppState, _WorkoutViewModel>(
+      onInit: (store) => store.dispatch(WorkoutInitAction(exercises)),
+      converter: (store) => _WorkoutViewModel.fromStore(store),
+      builder: (context, vm) => _buildVisible(vm, context),
     );
   }
 
-  Widget _buildVisible(_SessionScreenViewModel vm) {
-    if (vm.state is SessionInitial) {
+  Widget _buildVisible(_WorkoutViewModel vm, BuildContext context) {
+    if (vm.state is WorkoutInitial) {
       return Container();
-    } else if (vm.state is SessionLoading) {
-      return Container(
-        alignment: FractionalOffset.center,
-        child: CircularProgressIndicator(),
-      );
-    } else if (vm.state is SessionEmpty) {
+    } else if (vm.state is WorkoutEmpty) {
       return Center(
         child: Text('No Content'),
       );
-    } else if (vm.state is SessionLoaded) {
-      final state = vm.state as SessionLoaded;
+    } else if (vm.state is WorkoutLoaded) {
+      final state = vm.state as WorkoutLoaded;
       return Container(
         child: Column(
           children: [
@@ -72,8 +58,7 @@ class _VideoScreenState extends State<VideoScreen> {
                         alignment: Alignment.topLeft,
                         child: VideoOverlayWidget(
                             countdownTime: vm.countdownTime,
-                            title: vm.exerciseTitle,
-                            onEnd: vm.onNext))
+                            title: vm.exerciseTitle))
                   ],
                 )),
             SessionProgressWidget(
@@ -81,7 +66,7 @@ class _VideoScreenState extends State<VideoScreen> {
           ],
         ),
       );
-    } else if (vm.state is SessionError) {
+    } else if (vm.state is WorkoutError) {
       return Center(
         child: Text('Error: ${vm.error}'),
       );
@@ -90,8 +75,8 @@ class _VideoScreenState extends State<VideoScreen> {
   }
 }
 
-class _SessionScreenViewModel {
-  final SessionState state;
+class _WorkoutViewModel {
+  final WorkoutState state;
   final void Function() onPlay;
   final void Function() onPause;
   final void Function() onNext;
@@ -107,7 +92,7 @@ class _SessionScreenViewModel {
   final exerciseCount;
   final error;
 
-  _SessionScreenViewModel({
+  _WorkoutViewModel({
     required this.state,
     required this.playing,
     required this.started,
@@ -124,55 +109,61 @@ class _SessionScreenViewModel {
     required this.onNext,
   });
 
-  static _SessionScreenViewModel fromStore(Store<AppState> store) {
-    double _getStopwatchTimer(SessionState state) {
-      if (state is SessionLoaded)
-        return state.stopwatchTime;
-      else if (state is SessionEnd)
+  static _WorkoutViewModel fromStore(Store<AppState> store) {
+    double _getStopwatchTimer(WorkoutState state) {
+      if (state is WorkoutLoaded)
         return state.stopwatchTime;
       else
         return 0.0;
     }
 
-    return _SessionScreenViewModel(
-      state: store.state.sessionState,
-      playing: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded).playing
+    return _WorkoutViewModel(
+      state: store.state.sessionState.workoutState,
+      playing: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded).playing
           : false,
-      started: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded).started
+      started: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded).started
           : false,
-      delayTime: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded).delayTime
+      delayTime: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded).delayTime
           : 0.0,
-      countdownTime: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded).countdownTime
+      countdownTime: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded)
+              .countdownTime
           : double.infinity,
-      stopwatchTime: _getStopwatchTimer(store.state.sessionState),
-      exerciseTitle: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded)
+      stopwatchTime: _getStopwatchTimer(store.state.sessionState.workoutState),
+      exerciseTitle: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded)
               .exercises[
-                  (store.state.sessionState as SessionLoaded).playingIndex]
+                  (store.state.sessionState.workoutState as WorkoutLoaded)
+                      .playingIndex]
               .title
           : "",
-      thumbnail: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded)
+      thumbnail: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded)
               .exercises[
-                  (store.state.sessionState as SessionLoaded).playingIndex]
+                  (store.state.sessionState.workoutState as WorkoutLoaded)
+                      .playingIndex]
               .thumbnail
           : "",
-      playingIndex: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded).playingIndex
+      playingIndex: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded)
+              .playingIndex
           : 0,
-      exerciseCount: store.state.sessionState is SessionLoaded
-          ? (store.state.sessionState as SessionLoaded).exercises.length
+      exerciseCount: store.state.sessionState.workoutState is WorkoutLoaded
+          ? (store.state.sessionState.workoutState as WorkoutLoaded)
+              .exercises
+              .length
           : 0,
-      error: store.state.sessionState is SessionError
-          ? (store.state.sessionState as SessionError).error.toString()
+      error: store.state.sessionState.workoutState is WorkoutError
+          ? (store.state.sessionState.workoutState as WorkoutError)
+              .error
+              .toString()
           : "",
-      onPlay: () => store.dispatch(SessionPlayAction()),
-      onPause: () => store.dispatch(SessionPauseAction()),
-      onNext: () => store.dispatch(SessionInitNextAction()),
+      onPlay: () => store.dispatch(WorkoutPlayAction()),
+      onPause: () => store.dispatch(WorkoutPauseAction()),
+      onNext: () => store.dispatch(WorkoutInitNextAction()),
     );
   }
 }

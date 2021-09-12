@@ -7,11 +7,12 @@ import 'package:video_player_example/common/extensions.dart';
 import 'package:video_player_example/common/tts_controller.dart';
 import 'package:video_player_example/data/ticker_repository.dart';
 import 'package:video_player_example/data/workout_repository.dart';
-import 'package:video_player_example/presentation/session/video_screen.dart';
+import 'package:video_player_example/presentation/session/session_screen.dart';
 import 'package:video_player_example/presentation/session_end/session_end_screen.dart';
 import 'package:video_player_example/redux/app/app_reducer.dart';
 import 'package:video_player_example/redux/app/app_state.dart';
 import 'package:video_player_example/redux/session/session_middleware.dart';
+import 'package:video_player_example/redux/session/workout/workout_middleware.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,7 @@ void main() {
 }
 
 final theme = ThemeData(
-  primarySwatch: Colors.blue,
+  primarySwatch: Colors.blueGrey,
   visualDensity: VisualDensity.adaptivePlatformDensity,
 );
 
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
       initialState: AppState.initial(),
       middleware: [
         const NavigationMiddleware<AppState>(),
-        SessionMiddleware(tickerRepository, workoutRepository, ttsController)
+        SessionMiddleware(workoutRepository),
+        WorkoutMiddleware(tickerRepository, workoutRepository, ttsController)
       ]);
 
   @override
@@ -50,7 +52,7 @@ class MyApp extends StatelessWidget {
   Route _getRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.session_screen:
-        return VideoScreen().buildRoute(settings);
+        return SessionScreen().buildRoute(settings);
       case AppRoutes.session_end_screen:
         return SessionEndScreen(minutes: settings.arguments as String)
             .buildRoute(settings);
