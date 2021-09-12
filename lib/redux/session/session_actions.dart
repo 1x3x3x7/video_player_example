@@ -1,5 +1,5 @@
 import 'package:video_player_example/domain/api_response.dart';
-import 'package:video_player_example/domain/exercise.dart';
+import 'package:video_player_example/domain/workout_response.dart';
 
 class SessionLoadAction {
   final int id;
@@ -8,7 +8,7 @@ class SessionLoadAction {
 }
 
 class SessionLoadedAction {
-  final ApiResponse<List<Exercise>> data;
+  final ApiResponse<WorkoutResponse> data;
 
   SessionLoadedAction(this.data);
 }

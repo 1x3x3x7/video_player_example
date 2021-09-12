@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:video_player_example/domain/api_response.dart';
-import 'package:video_player_example/domain/exercise.dart';
+import 'package:video_player_example/domain/workout_response.dart';
 import 'package:video_player_example/presentation/common/app_error_widget.dart';
 import 'package:video_player_example/presentation/common/app_loading_widget.dart';
 import 'package:video_player_example/presentation/session/workout_widget.dart';
@@ -38,7 +38,7 @@ class SessionScreen extends StatelessWidget {
                 onRetryPressed: () => vm.onLoad(vm.id),
                 errorMessage: vm.response.message));
       case Status.COMPLETED:
-        return WorkoutWidget(exercises: vm.response.data!);
+        return WorkoutWidget(exercises: vm.response.data?.exercises ?? []);
       default:
         throw ArgumentError('No argument ${vm.response.status}');
     }
@@ -46,7 +46,7 @@ class SessionScreen extends StatelessWidget {
 }
 
 class _SessionScreenViewModel {
-  final ApiResponse<List<Exercise>> response;
+  final ApiResponse<WorkoutResponse> response;
   final Function onLoad;
   final int id;
 

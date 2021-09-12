@@ -5,6 +5,7 @@ import 'package:redux/redux.dart';
 import 'package:video_player_example/common/app_routes.dart';
 import 'package:video_player_example/common/extensions.dart';
 import 'package:video_player_example/common/tts_controller.dart';
+import 'package:video_player_example/data/app_client.dart';
 import 'package:video_player_example/data/ticker_repository.dart';
 import 'package:video_player_example/data/workout_repository.dart';
 import 'package:video_player_example/presentation/session/session_screen.dart';
@@ -25,9 +26,10 @@ final theme = ThemeData(
 );
 
 class MyApp extends StatelessWidget {
-  final tickerRepository = TickerRepository();
-  final workoutRepository = WorkoutRepository();
-  final ttsController = TtsController();
+  late final appClient = AppClient();
+  late final tickerRepository = TickerRepository();
+  late final workoutRepository = WorkoutRepository(appClient);
+  late final ttsController = TtsController();
   late final store = Store<AppState>(appReducer,
       initialState: AppState.initial(),
       middleware: [
